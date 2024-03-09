@@ -15,6 +15,7 @@ type TodoService interface {
 	TodoInsert(todo models.Todo) (*dto.TodoDTO, error)
 	TodoGetAll() ([]models.Todo, error)
 	TodoDelete(id primitive.ObjectID) (bool, error)
+	TodoGetById(id primitive.ObjectID) (models.Todo, error)
 }
 
 func (t DefaultTodoService) TodoInsert(todo models.Todo) (*dto.TodoDTO, error) {
@@ -49,6 +50,14 @@ func (t DefaultTodoService) TodoDelete(id primitive.ObjectID) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (t DefaultTodoService) TodoGetById(id primitive.ObjectID) (models.Todo, error) {
+	result, err := t.Repo.GetById(id)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }
 
 func NewTodoService(Repo repository.TodoRepository) DefaultTodoService {

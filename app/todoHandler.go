@@ -46,3 +46,15 @@ func (h TodoHandler) DeleteTodo(c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusOK).JSON(fiber.Map{"State": true})
 }
+
+func (h TodoHandler) GetByIdTodo(c *fiber.Ctx) error {
+	query := c.Params("id")
+	cnv, _ := primitive.ObjectIDFromHex(query)
+
+	result, err := h.Service.TodoGetById(cnv)
+
+	if err != nil {
+		return c.Status(http.StatusNotFound).JSON(err.Error())
+	}
+	return c.Status(http.StatusOK).JSON(result)
+}

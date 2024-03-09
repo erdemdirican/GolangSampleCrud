@@ -20,6 +20,7 @@ type TodoRepository interface {
 	Insert(todo models.Todo) (bool, error)
 	GetAll() ([]models.Todo, error)
 	Delete(id primitive.ObjectID) (bool, error)
+	GetById(id primitive.ObjectID) (models.Todo, error)
 }
 
 func (t TodoRepositoryDB) Insert(todo models.Todo) (bool, error) {
@@ -70,6 +71,21 @@ func (t TodoRepositoryDB) Delete(id primitive.ObjectID) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (t TodoRepositoryDB) GetById(id primitive.ObjectID) (models.Todo, error) {
+	var todo models.Todo
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err := t.TodoCollection.FindOne(ctx, bson.M{"id": id}).Decode(&todo)
+	if err != nil || err == mongo.ErrNoDocuments {
+		log.Fatalln(err)
+		return todo, err
+	}
+
+	return todo, nil
 }
 
 func NewTodoRepositoryDb(dbClient *mongo.Collection) TodoRepositoryDB {
