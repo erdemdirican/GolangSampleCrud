@@ -36,9 +36,9 @@ This project is a simple CRUD (Create, Read, Update, Delete) application for man
 ## API Documentation
 
 - `GET /api/todos`: Lists all TODO items.
-- `POST /api/todos`: Adds a new TODO item.
-- `PUT /api/todos/{id}`: Updates a TODO item.
-- `DELETE /api/todos/{id}`: Deletes a TODO item.
+- `POST /api/todo`: Adds a new TODO item.
+- `GET /api/todo/{id}`: GetById a TODO item.
+- `DELETE /api/todo/{id}`: Deletes a TODO item.
 
 ## Contributions
 
