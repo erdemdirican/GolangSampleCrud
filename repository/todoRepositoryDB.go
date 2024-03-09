@@ -19,6 +19,7 @@ type TodoRepositoryDB struct {
 type TodoRepository interface {
 	Insert(todo models.Todo) (bool, error)
 	GetAll() ([]models.Todo, error)
+	Delete(id primitive.ObjectID) (bool, error)
 }
 
 func (t TodoRepositoryDB) Insert(todo models.Todo) (bool, error) {
@@ -57,6 +58,18 @@ func (t TodoRepositoryDB) GetAll() ([]models.Todo, error) {
 		todos = append(todos, todo)
 	}
 	return todos, nil
+}
+
+func (t TodoRepositoryDB) Delete(id primitive.ObjectID) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	result, err := t.TodoCollection.DeleteOne(ctx, bson.M{"id": id})
+
+	if err != nil || result.DeletedCount <= 0 {
+		return false, err
+	}
+	return true, nil
 }
 
 func NewTodoRepositoryDb(dbClient *mongo.Collection) TodoRepositoryDB {
